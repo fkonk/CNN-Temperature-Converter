@@ -411,3 +411,23 @@ a:focus {
         margin-bottom: 5px;
     }
 }
+/* Thermometer Styles */
+.thermometer {
+    width: 50px;
+    height: 200px;
+    background-color: #ccc;
+    margin: 30px auto;
+    border-radius: 25px;
+    position: relative;
+    overflow: hidden;
+}
+
+.mercury {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    background-color: var(--mercury-color, var(--cnn-red));
+    border-radius: 25px 25px 0 0;
+    height: 0%;
+    transition: height 0.5s ease, background-color 0.5s ease;
+}

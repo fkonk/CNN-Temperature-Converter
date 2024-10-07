@@ -493,3 +493,96 @@ function setDailyChallenge() {
     challengeElement.textContent = challenge.question;
     document.getElementById('challenge-answer').textContent = challenge.answer;
 }
+// Existing theme toggle function and load preferences
+
+// Handle Input with Live Suggestions (unchanged)
+function handleInput(fieldId) {
+    const inputField = document.getElementById(fieldId);
+    const maxLength = 10;
+    let value = inputField.value;
+
+    // Remove any characters beyond maxLength
+    if (value.length > maxLength) {
+        inputField.value = value.slice(0, maxLength);
+        value = inputField.value;
+    }
+
+    // Remove any non-numeric characters except for minus sign and decimal point
+    inputField.value = value.replace(/[^0-9.\-]/g, '');
+
+    // Ensure only one decimal point
+    const parts = inputField.value.split('.');
+    if (parts.length > 2) {
+        inputField.value = parts[0] + '.' + parts.slice(1).join('');
+    }
+
+    // Ensure minus sign is only at the beginning
+    if (inputField.value.indexOf('-') > 0) {
+        inputField.value = inputField.value.replace('-', '');
+        inputField.value = '-' + inputField.value;
+    }
+
+    // Prevent multiple minus signs
+    const minusCount = (inputField.value.match(/-/g) || []).length;
+    if (minusCount > 1) {
+        inputField.value = inputField.value.replace(/-/g, '');
+        inputField.value = '-' + inputField.value;
+    }
+
+    // Call convertTemperature function
+    if (fieldId === 'inputValue') {
+        convertTemperature('input');
+    } else if (fieldId === 'outputValue') {
+        convertTemperature('output');
+    }
+}
+
+// Global variable to track dragging
+let isDragging = false;
+
+// Handle the start of the drag
+document.getElementById('mercury').addEventListener('mousedown', function(event) {
+    isDragging = true;
+    handleDrag(event);  // Call drag function to update on click
+});
+
+// Handle dragging while moving the mouse
+document.addEventListener('mousemove', function(event) {
+    if (isDragging) {
+        handleDrag(event);  // Update the thermometer while the mouse is moving
+    }
+});
+
+// Stop dragging when mouse is released
+document.addEventListener('mouseup', function() {
+    isDragging = false;
+});
+
+// Prevent default image dragging behavior
+document.getElementById('mercury').addEventListener('dragstart', function(event) {
+    event.preventDefault();
+});
+
+// Function to update thermometer and temperature when dragging
+function handleDrag(event) {
+    const thermometer = document.querySelector('.thermometer');
+    const mercury = document.getElementById('mercury');
+    const thermometerHeight = thermometer.clientHeight;
+
+    // Calculate the drag position relative to the thermometer
+    let dragPosition = event.clientY - thermometer.getBoundingClientRect().top;
+    let percentage = 100 - (dragPosition / thermometerHeight) * 100;
+
+    // Clamp percentage between 0 and 100
+    percentage = Math.max(0, Math.min(100, percentage));
+
+    // Convert the percentage back to Celsius (-100°C to 100°C)
+    let celsiusValue = (percentage / 100) * 200 - 100;
+
+    // Update the mercury height
+    mercury.style.height = percentage + '%';
+
+    // Update the input value and trigger conversion
+    document.getElementById('inputValue').value = celsiusValue.toFixed(1);
+    convertTemperature('input');
+}

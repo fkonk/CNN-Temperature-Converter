@@ -41,8 +41,14 @@
         <div class="converter">
             <h2>Convert Temperatures</h2>
             <div class="input-section">
-                <!-- Input Field -->
-                <input type="number" id="inputValue" placeholder="Enter temperature" oninput="handleInput('inputValue')" maxlength="10" aria-label="Enter temperature value">
+                <!-- Input Field with Live Suggestions -->
+                <input type="number" id="inputValue" placeholder="Enter temperature" list="suggestions" oninput="handleInput('inputValue')" maxlength="10" aria-label="Enter temperature value">
+                <datalist id="suggestions">
+                    <option value="0">Freezing point of water (0°C)</option>
+                    <option value="100">Boiling point of water (100°C)</option>
+                    <option value="37">Average human body temperature (37°C)</option>
+                    <option value="-40">Celsius and Fahrenheit match (-40°C/-40°F)</option>
+                </datalist>
                 
                 <!-- Output Field -->
                 <input type="number" id="outputValue" placeholder="Converted temperature" oninput="handleInput('outputValue')" maxlength="10" aria-label="Converted temperature value">
@@ -60,7 +66,6 @@
                             <option value="Delisle">Delisle (°De)</option>
                             <option value="Newton">Newton (°N)</option>
                             <option value="Romer">Rømer (°Rø)</option>
-                            <!-- Additional units -->
                             <option value="Leiden">Leiden (°L)</option>
                             <option value="Planck">Planck (°P)</option>
                         </select>
@@ -100,9 +105,9 @@
                 <button id="copy-btn" onclick="copyResult()" aria-label="Copy Result">Copy</button>
             </div>
             <div id="recommendation"></div>
-            <!-- Thermometer Visualization -->
+            <!-- Thermometer Visualization with Drag Functionality -->
             <div class="thermometer" aria-label="Thermometer visualization">
-                <div class="mercury" id="mercury"></div>
+                <div class="mercury" id="mercury" draggable="true" ondragend="handleDrag(event)"></div>
             </div>
             <button id="reset-btn" onclick="resetConverter()" aria-label="Reset Converter">Reset</button>
             <h3>Conversion History</h3>
